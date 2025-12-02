@@ -1,4 +1,6 @@
+declare const NG_APP_API_URL: string;
+
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api',
+  apiUrl: NG_APP_API_URL,
 };

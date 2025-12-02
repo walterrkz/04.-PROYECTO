@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Product } from '../../types/Products';
+import { environment } from '../../../../environments/environment';
 
 type Pagination = {
   currentPage: number;
@@ -18,7 +19,7 @@ type ProductsResponse = {
 
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
-  private baseUrl = 'http://localhost:3000/api/products';
+  private baseUrl = `${environment.apiUrl}/products`;
   constructor(private httpClient: HttpClient) {}
 
   getProducts(page = 1, limit = 12): Observable<ProductsResponse> {

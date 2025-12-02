@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import { map, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { tokenSchema } from '../../types/Token';
+import { environment } from '../../../../environments/environment';
 
 export type decodedToken = {
   userId: string;
@@ -20,7 +21,7 @@ type TokenResponse = {
   providedIn: 'root',
 })
 export class AuthService {
-  baseUrl = 'http://localhost:3000/api';
+  baseUrl = `${environment.apiUrl}`;
 
   private _loginError$ = new Subject<string>();
   loginError$ = this._loginError$.asObservable();

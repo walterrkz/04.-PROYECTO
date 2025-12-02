@@ -1,0 +1,67 @@
+<div class="page">
+  <div class="card-wrap">
+    <form (ngSubmit)="handleSubmit()" [formGroup]="loginForm" class="card">
+      <div class="text-center">
+        <h2 class="title">Inicio de sesion</h2>
+      </div>
+
+      <div class="fields">
+        <app-form-field
+          label="correo electrónico"
+          fieldId="email"
+          type="email"
+          placeholder="tu@email"
+          [required]="true"
+          [errorMessage]="getErrorMessage('email')"
+          formControlName="email"
+        ></app-form-field>
+
+        <app-form-field
+          label="contraseña"
+          fieldId="password"
+          type="password"
+          placeholder="*********"
+          [required]="true"
+          [errorMessage]="getErrorMessage('password')"
+          formControlName="password"
+        ></app-form-field>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="!loginForm.valid"
+        class="btn btn-primary"
+      >
+        <span class="btn-content">
+          <svg
+            class="icon-20"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+          Iniciar sesion
+        </span>
+      </button>
+
+      @if (feedbackType === 'error') {
+      <div class="alert alert--error" role="alert" aria-live="polite">
+        {{ feedbackText }}
+      </div>
+      }
+
+      <div class="text-center pt-16">
+        <p class="muted">
+          ¿aun no tienes cuenta?
+          <a class="link" routerLink="/register">Registrarme</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

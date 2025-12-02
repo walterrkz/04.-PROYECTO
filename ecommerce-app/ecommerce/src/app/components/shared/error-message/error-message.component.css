@@ -1,0 +1,24 @@
+/* Contenedor del mensaje de error (equivalente a: mt-1 text-sm text-red-600 flex items-center gap-1 animate-pulse) */
+.error-inline {
+  margin-top: 0.25rem;         /* mt-1 */
+  font-size: 0.875rem;         /* text-sm */
+  line-height: 1.25rem;
+  color: #dc2626;              /* red-600 aproximado */
+  display: flex;               /* flex */
+  align-items: center;         /* items-center */
+  gap: 0.25rem;                /* gap-1 */
+  animation: error-pulse 2s ease-in-out infinite; /* animate-pulse */
+}
+
+/* Ícono (equivalente a: w-4 h-4) */
+.error-inline__icon {
+  width: 1rem;                 /* w-4 */
+  height: 1rem;                /* h-4 */
+  flex: 0 0 auto;
+}
+
+/* Animación tipo Tailwind 'animate-pulse' (opacity 1 → .5 → 1) */
+@keyframes error-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: .5; }
+}

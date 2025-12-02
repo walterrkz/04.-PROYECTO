@@ -1,0 +1,61 @@
+<section class="hero">
+  <div class="container">
+    <h1>Sneakers: estilo, confort y cultura</h1>
+    <p>
+      Los sneakers son más que calzado: combinan desempeño, comodidad y una
+      estética que evoluciona con la cultura urbana. Aquí encontrarás guías,
+      tips y una selección pensada para tus necesidades.
+    </p>
+  </div>
+</section>
+
+<section class="section container">
+  <h2>¿Qué hace únicos a los sneakers?</h2>
+  <ul class="bullets">
+    <li>
+      <strong>Comodidad</strong>: amortiguación y soporte para uso diario.
+    </li>
+    <li>
+      <strong>Versatilidad</strong>: del gym al streetwear sin perder estilo.
+    </li>
+    <li>
+      <strong>Identidad</strong>: colores, siluetas y colaboraciones icónicas.
+    </li>
+  </ul>
+</section>
+
+<section class="section container">
+  <h2>Cómo elegir tus próximos sneakers</h2>
+  <ol class="steps">
+    <li>Define el <strong>uso</strong> (diario, deporte, lifestyle).</li>
+    <li>Revisa la <strong>horma</strong> y la guía de tallas de la marca.</li>
+    <li>
+      Elige materiales según clima y <strong>mantenimiento</strong> deseado.
+    </li>
+    <li>Prioriza la <strong>amortiguación</strong> y el soporte del arco.</li>
+  </ol>
+</section>
+
+<section class="section container">
+  <h2>Cuidados básicos</h2>
+  <p>
+    Cepilla el polvo después de cada uso, ventílalos, alterna pares para alargar
+    su vida útil y usa protectores para lluvia si el material es delicado.
+  </p>
+</section>
+
+<hr class="divider" />
+
+<section class="section container">
+  <div class="section__header">
+    <h2>Los 10 sneakers más baratos</h2>
+    <p>Una selección económica para estrenar hoy sin romper el cochinito.</p>
+    @if (products === null) {
+    <p class="error">No se pudieron cargar los productos.</p>
+    } @else if (products.length === 0) {
+    <p>No se encontraron productos.</p>
+    } @else {
+    <app-carrousel [products]="products"></app-carrousel>
+    }
+  </div>
+</section>

@@ -1,0 +1,21 @@
+<div class="form-field">
+  <label [for]="fieldId" class="form-label">
+    {{ label }}
+    @if (required) {
+      <span class="required-asterisk">*</span>
+    }
+  </label>
+
+  <input
+    class="form-input"
+    [id]="fieldId"
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="disabled"
+    (input)="onInputChange($event)"
+    (blur)="onBlur()"
+  />
+
+  <app-error-message [message]="errorMessage"></app-error-message>
+</div>

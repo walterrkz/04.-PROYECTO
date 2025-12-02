@@ -1,0 +1,49 @@
+<div class="page">
+  <div class="card-wrap">
+    <form (ngSubmit)="handleSubmit()" [formGroup]="registerForm" class="card">
+      <div class="text-center">
+        <h2 class="title">Crear Cuenta</h2>
+        <p class="subtitle">Únete a nuestra comunidad</p>
+      </div>
+
+      <div class="fields stack-20">
+        @for (field of fields; track $index) {
+        <app-form-field
+          [label]="field.label"
+          [fieldId]="field.fieldId"
+          [type]="field.type"
+          [placeholder]="field.placeholder"
+          [required]="field.required"
+          [errorMessage]="getErrorMessage(field.fieldId)"
+          [formControlName]="field.fieldId"
+        ></app-form-field>
+        }
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="!registerForm.valid || submitPending"
+        class="btn btn-primary btn-block"
+      >
+        <span class="btn-content">
+          {{ submitPending ? "Enviando..." : "Crear cuenta" }}
+        </span>
+      </button>
+      @if (feedbackType) {
+      <div
+        class="form-feedback"
+        [class.form-feedback--success]="feedbackType === 'success'"
+        [class.form-feedback--error]="feedbackType === 'error'"
+      >
+        {{ feedbackText }}
+      </div>
+      }
+      <div class="text-center pt-16">
+        <p class="muted">
+          ¿Ya tienes cuenta?
+          <a class="link" routerLink="/login">Inicia sesión</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,142 @@
+.page {
+  min-height: 100vh;
+  background: var(--gray-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem; /* py-12 px-4 */
+}
+
+/* sm:px-6, lg:px-8 */
+@media (min-width: 640px) {
+  .page { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .page { padding-left: 2rem; padding-right: 2rem; }
+}
+
+/* Ancho máximo de la tarjeta */
+.card-wrap {
+  width: 100%;
+  max-width: 28rem; /* max-w-md */
+}
+
+/* Tarjeta / Formulario */
+.card {
+  background: #ffffff;
+  padding: 2rem; /* p-8 */
+  border-radius: calc(var(--radius-xl) + 4px); /* rounded-2xl aprox */
+  box-shadow: var(--shadow-sm); /* shadow-sm */
+  border: 1px solid var(--gray-100); /* border-gray-100 */
+  display: grid;
+  gap: 1.5rem; /* space-y-6 */
+}
+
+/* Tipografía y alineaciones */
+.text-center { text-align: center; }
+
+.title {
+  font-size: 1.875rem; /* text-3xl */
+  line-height: 2.25rem;
+  font-weight: 700; /* font-bold */
+  color: var(--gray-900);
+  margin: 0;
+}
+
+/* Contenedor de campos */
+.fields {
+  display: grid;
+  gap: 1.25rem; /* space-y-5 */
+}
+
+/* Botón primario */
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 0.75rem; /* rounded-xl */
+  font-weight: 600;
+  font-size: 1rem; /* text-base */
+  padding: 0.875rem 1.5rem; /* py-3.5 px-6 */
+  transition: background-color .2s, color .2s, box-shadow .2s, opacity .2s, filter .2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: var(--blue-600);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--blue-700);
+}
+
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ring-blue); /* focus:ring-4 focus:ring-blue-100 */
+}
+
+.btn:disabled {
+  background: #e5e7eb; /* disabled:bg-gray-200 */
+  color: var(--gray-400); /* disabled:text-gray-400 */
+  cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+  background: #e5e7eb; /* disabled:hover:bg-gray-200 */
+}
+
+/* Icono del botón */
+.icon-20 {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
+/* Espaciado y colores del texto inferior */
+.pt-16 { padding-top: 4rem; } /* pt-16 */
+
+.muted {
+  color: var(--gray-500); /* text-gray-500 */
+  font-size: 0.875rem; /* text-sm */
+  margin: 0;
+}
+
+.link {
+  color: var(--blue-600); /* text-blue-600 */
+  font-weight: 500; /* font-medium */
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.link:hover {
+  color: var(--blue-700); /* hover:text-blue-700 */
+}
+
+.alert {
+  margin: 0.25rem 0 0.5rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  border: 1px solid transparent;
+}
+
+.alert--error {
+  color: #7a1020;                 /* texto rojo oscuro accesible */
+  background: #ffe6ea;            /* fondo suave */
+  border-color: #ffb8c2;          /* borde tenue */
+}
+
+/* Integración con tu tarjeta: separa visualmente la alerta del resto */
+.card > .alert {
+  margin-top: -0.5rem;            /* acerca la alerta al título si la pones arriba */
+  margin-bottom: 0.5rem;
+}
+
+/* Accesibilidad: foco visible si la alerta recibe foco (p. ej., navegando con teclado) */
+.alert:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}

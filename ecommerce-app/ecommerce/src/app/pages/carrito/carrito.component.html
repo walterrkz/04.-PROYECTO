@@ -1,0 +1,165 @@
+<div class="cart-page">
+  @if (alert) {
+  <div class="cart-alert">
+    <div
+      class="alert"
+      role="alert"
+      [class.alert-success]="alert.type === 'success'"
+      [class.alert-danger]="alert.type === 'danger'"
+    >
+      {{ alert.text }}
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="closeAlert()"
+      ></button>
+    </div>
+  </div>
+  }
+
+  <h1 class="cart-title">Tu carrito</h1>
+
+  @if (!user) {
+  <div class="cart-empty auth">
+    <h2>No has iniciado sesión</h2>
+    <p>Por favor inicia sesión para ver tu carrito.</p>
+    <a routerLink="/login" class="btn btn-primary">Ir a iniciar sesión</a>
+  </div>
+  } @if (user && loading) {
+  <div class="cart-loading">Cargando tu carrito…</div>
+  } @if (user && !loading && (!cart || cart.products.length === 0)) {
+  <div class="cart-empty">
+    <h2>No hay productos en tu carrito</h2>
+    <p>Explora nuestros productos y añade tus favoritos.</p>
+    <a routerLink="/products" class="btn btn-outline">Ver productos</a>
+  </div>
+  } @if (user && !loading && cart && cart.products.length > 0) {
+  <section class="cart-layout">
+    <ul class="cart-list">
+      @for (item of cart.products; track item.product._id) {
+      <li class="cart-item">
+        <div class="item-media">
+          <img
+            [src]="item.product.imagesUrl?.[0]"
+            [alt]="item.product.name"
+            class="item-img"
+          />
+        </div>
+
+        <div class="item-info">
+          <a [routerLink]="['/products', item.product._id]" class="item-name">
+            {{ item.product.name }}
+          </a>
+
+          <div class="item-meta">
+            <span class="item-cat">
+              {{ item.product.category.name }}
+            </span>
+            <span class="item-price">
+              {{ item.product.price | currency }}
+            </span>
+          </div>
+
+          <div class="item-qty">
+            <span>Cantidad:</span>
+
+            <div class="qty-controls">
+              <button
+                type="button"
+                class="qty-btn"
+                (click)="decreaseQty(item)"
+                [disabled]="item.quantity <= 1"
+                aria-label="Disminuir cantidad"
+              >
+                −
+              </button>
+
+              <span class="qty-value">
+                {{ item.quantity }}
+              </span>
+
+              <button
+                type="button"
+                class="qty-btn"
+                (click)="increaseQty(item)"
+                [disabled]="item.quantity >= item.product.stock"
+                aria-label="Aumentar cantidad"
+              >
+                +
+              </button>
+            </div>
+
+            @if (item.product.stock <= 0 || item.quantity > item.product.stock)
+            {
+            <div class="qty-stock">
+              <span class="stock-warning">
+                Stock insuficiente (stock: {{ item.product.stock }})
+              </span>
+            </div>
+            } @else {
+            <div class="qty-stock">
+              Stock disponible: {{ item.product.stock }}
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="item-total">
+          <span>Total</span>
+          <strong>
+            {{ lineTotal(item.product.price, item.quantity) | currency }}
+          </strong>
+
+          <button
+            type="button"
+            class="btn-icon-trash"
+            (click)="removeFromCart(item.product._id)"
+            aria-label="Eliminar producto del carrito"
+          >
+            🗑
+          </button>
+        </div>
+      </li>
+      }
+    </ul>
+
+    <aside class="cart-summary">
+      <h3>Resumen</h3>
+
+      <div class="sum-row">
+        <span>Subtotal</span>
+        <span>{{ total | currency }}</span>
+      </div>
+
+      <div class="sum-total">
+        <span>Total</span>
+        <strong>{{ total | currency }}</strong>
+      </div>
+
+      <div class="sum-actions">
+        <a
+          routerLink="/checkout"
+          class="btn btn-primary w-100"
+          [class.btn-disabled]="hasStockIssue"
+          [attr.aria-disabled]="hasStockIssue"
+          (click)="onCheckoutClick($event)"
+        >
+          Proceder al pago
+        </a>
+
+        <a routerLink="/products" class="btn btn-link w-100">
+          Seguir comprando
+        </a>
+      </div>
+
+      @if (hasStockIssue) {
+      <div class="stock-issue-msg">
+        Hay productos sin stock suficiente o agotados. Ajusta las cantidades
+        antes de continuar.
+      </div>
+      }
+    </aside>
+  </section>
+  }
+</div>

@@ -1,0 +1,39 @@
+<div id="carouselExample" class="carousel slide">
+  <div class="carousel-inner">
+    @for (item of fnGetItemsNumber(products); track item; let i = $index) {
+      <div class="carousel-item {{ i === 0 ? 'active' : '' }}">
+        <div
+          class="product-grid"
+          [style.grid-template-columns]="'repeat(' + carrouselItems + ', 1fr)'"
+        >
+          @for (j of fnGetItems(i, products); track j) {
+            <app-card
+              [product]="j"
+              [outOfStock]="isOutOfStock(j)"
+            ></app-card>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <button
+    class="carousel-control-prev"
+    type="button"
+    data-bs-target="#carouselExample"
+    data-bs-slide="prev"
+  >
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+
+  <button
+    class="carousel-control-next"
+    type="button"
+    data-bs-target="#carouselExample"
+    data-bs-slide="next"
+  >
+    <span class="carousel-control-next-icon" aria-hidden="false"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>

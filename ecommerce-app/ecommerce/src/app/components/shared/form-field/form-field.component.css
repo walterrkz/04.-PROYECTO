@@ -1,0 +1,65 @@
+/* Contenedor del campo (mb-4) */
+.form-field {
+  margin-bottom: 1rem; /* 16px */
+}
+
+/* Label (block text-sm font-medium text-gray-700 mb-2) */
+.form-label {
+  display: block;
+  font-size: 0.875rem;      /* 14px */
+  line-height: 1.25rem;     /* 20px */
+  font-weight: 500;         /* medium */
+  color: #374151;           /* gray-700 aprox */
+  margin-bottom: 0.5rem;    /* 8px */
+}
+
+/* Asterisco requerido (text-red-500) */
+.required-asterisk {
+  color: #ef4444;           /* red-500 */
+  margin-left: 0.125rem;    /* opcional, pequeño espacio */
+}
+
+/* Input (w-full px-3 py-2 border border-gray-300 rounded-lg ...) */
+.form-input {
+  width: 100%;                          /* w-full */
+  padding: 0.5rem 0.75rem;              /* py-2 px-3 */
+  border: 1px solid #d1d5db;            /* gray-300 */
+  border-radius: 0.5rem;                /* rounded-lg (~8px) */
+  background: #fff;
+  color: #111827;                       /* gray-900 */
+  font: inherit;
+  transition: border-color .2s ease, box-shadow .2s ease; /* transition-colors */
+}
+
+/* Placeholder (opcional) */
+.form-input::placeholder {
+  color: #9ca3af;                       /* gray-400 aprox */
+}
+
+/* Hover (opcional, para feedback sutil) */
+.form-input:hover:not(:disabled) {
+  border-color: #cbd5e1;                /* gray-300→gray-300/200 */
+}
+
+/* Focus (focus:ring-2 focus:ring-blue-500 focus:border-blue-500) */
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;                /* blue-500 */
+  box-shadow: 0 0 0 2px rgba(59,130,246,.35); /* “ring-2” azul */
+}
+
+/* Disabled */
+.form-input:disabled {
+  background: #f9fafb;                  /* gray-50 */
+  color: #9ca3af;                       /* gray-400 */
+  cursor: not-allowed;
+}
+
+/* --- Opcional: estado de error si quieres pintar el borde rojo ---
+   Puedes aplicarlo desde el componente padre cuando haya error:
+   <input class="form-input form-input--error" ... />
+*/
+.form-input--error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239,68,68,.25);
+}

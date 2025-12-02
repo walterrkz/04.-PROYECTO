@@ -1,0 +1,50 @@
+.container {
+  padding-inline: 16px;
+}
+
+.section {
+  padding-block: 24px;
+}
+
+.section__header h2 {
+  margin: 0 0 6px 0;
+}
+
+.section__header p {
+  margin: 0;
+  color: #4b5563; /* gris medio */
+}
+
+.hero {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  color: #f8fafc;
+  padding: 46px 0;
+}
+
+.hero h1 {
+  font-size: clamp(28px, 5vw, 44px);
+  margin: 0 0 10px 0;
+}
+
+.hero p {
+  margin: 0;
+  opacity: 0.95;
+}
+
+.bullets,
+.steps {
+  margin: 12px 0 0 0;
+  padding-left: 18px;
+}
+
+.bullets li,
+.steps li {
+  margin-bottom: 6px;
+}
+
+.divider {
+  height: 1px;
+  border: 0;
+  background: #e5e7eb;
+  margin: 8px 0 0 0;
+}

@@ -1,0 +1,20 @@
+#carouselExample {
+  width: 100%;
+  margin-inline: auto;
+  margin-block: 50px;
+}
+
+.carousel-inner {
+  background-color: white;
+  width: 80%;
+}
+
+.product-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(1);
+}

@@ -1,0 +1,89 @@
+@if (product) {
+<div class="pd-page">
+  @if (alert) {
+    <div class="pd-alert">
+      <div
+        class="alert"
+        role="alert"
+        [class.alert-success]="alert.type === 'success'"
+        [class.alert-danger]="alert.type === 'danger'"
+      >
+        {{ alert.text }}
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeAlert()"
+        ></button>
+      </div>
+    </div>
+  }
+
+  <span class="current">{{ product.name }}</span>
+
+  <section class="pd-layout">
+    <div class="pd-hero">
+      <img [src]="product.imagesUrl?.[0]" [alt]="product.name" />
+    </div>
+
+    <div class="pd-info">
+      <h1 class="pd-title">{{ product.name }}</h1>
+
+      <div class="pd-meta">
+        <span class="pd-price">{{ product.price | currency }}</span>
+        <span
+          class="pd-stock"
+          [class.low]="product.stock < 5 && product.stock > 0"
+          [class.out]="product.stock === 0"
+        >
+          {{ product.stock === 0 ? 'Sin stock' : 'Stock: ' + product.stock }}
+        </span>
+      </div>
+
+      @if (product.category) {
+      <div class="pd-cat">
+        <span class="pd-cat-label">Categoría:</span>
+        <span class="pd-cat-name">{{ product.category.name }}</span>
+      </div>
+      }
+
+      <p class="pd-desc">
+        {{ product.description }}
+      </p>
+
+      @if (user) {
+      <div class="pd-actions">
+        @if (outOfStock) {
+          <button
+            class="btn btn-outline btn-no-stock"
+            type="button"
+            disabled
+          >
+            No hay stock
+          </button>
+        } @else {
+          <button
+            class="btn btn-outline"
+            type="button"
+            (click)="onAddToCart()"
+            [disabled]="adding"
+          >
+            {{ adding ? 'Añadiendo…' : 'Añadir al carrito' }}
+          </button>
+        }
+      </div>
+      }
+
+      <div class="pd-back">
+        <a routerLink="/products" class="btn btn-link">Volver a productos</a>
+      </div>
+    </div>
+  </section>
+</div>
+} @else {
+<div class="pd-empty">
+  <h2 class="pd-empty-title">Producto no encontrado</h2>
+  <p class="pd-empty-text">No pudimos cargar los datos de este producto.</p>
+  <a routerLink="/products" class="btn btn-outline">Volver a productos</a>
+</div>
+}

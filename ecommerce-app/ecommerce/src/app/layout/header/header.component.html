@@ -17,70 +17,69 @@
         class="d-flex w-100 flex-column flex-lg-row align-items-center gap-3"
       >
         <div class="flex-fill text-center">
-          <a class="navbar-brand m-0 p-0 d-inline" routerLink="/">
-            SneakerFever
-          </a>
+          <a class="navbar-brand m-0 p-0 d-inline" routerLink="/"
+            >SneakerFever</a
+          >
         </div>
 
         <div class="flex-fill text-center">
-          <a class="nav-link m-0 p-0 d-inline" routerLink="/products">
-            Productos
-          </a>
-        </div>
-
-        <div class="flex-fill text-center">
-          <a class="nav-link m-0 p-0 d-inline" routerLink="/carrito">
-            Carrito
-          </a>
+          <a class="nav-link m-0 p-0 d-inline" routerLink="/products"
+            >Productos</a
+          >
         </div>
 
         @if (user) {
-          <div class="flex-fill text-center dropdown">
-            <a
-              class="nav-link m-0 p-0 d-inline dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Bienvenido {{ user.displayName }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li>
-                <button
-                  type="button"
-                  class="dropdown-item"
-                  (click)="onLogout()"
-                >
-                  Cerrar sesión
-                </button>
-              </li>
-            </ul>
-          </div>
+        <div class="flex-fill text-center dropdown">
+          <a
+            class="nav-link m-0 p-0 d-inline dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Bienvenido {{ user.displayName }}
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" routerLink="/profile">Perfil</a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/carrito">Carrito</a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/historial">Histórico</a>
+            </li>
+
+            <li><hr class="dropdown-divider" /></li>
+
+            <li>
+              <button type="button" class="dropdown-item" (click)="onLogout()">
+                Cerrar sesión
+              </button>
+            </li>
+          </ul>
+        </div>
         } @else {
-          <div class="flex-fill text-center dropdown">
-            <a
-              class="nav-link m-0 p-0 d-inline dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Autenticación
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li>
-                <a class="dropdown-item" routerLink="/login">
-                  Iniciar sesión
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" routerLink="/register">
-                  Registrarse
-                </a>
-              </li>
-            </ul>
-          </div>
+        <div class="flex-fill text-center dropdown">
+          <a
+            class="nav-link m-0 p-0 d-inline dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Autenticación
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" routerLink="/login">Iniciar sesión</a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/register">Registrarse</a>
+            </li>
+          </ul>
+        </div>
         }
       </div>
     </div>

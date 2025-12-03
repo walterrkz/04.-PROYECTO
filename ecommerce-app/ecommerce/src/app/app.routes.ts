@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: '', component: HomeComponent, pathMatch: 'full', title: 'Home' },
   {
     path: 'products',
     loadComponent: () =>
@@ -49,6 +49,23 @@ export const routes: Routes = [
       import('./pages/checkout/checkout.component').then(
         (c) => c.CheckoutComponent
       ),
+      title: 'Checkout'
+  },
+  {
+    path: 'historial',
+    loadComponent: () =>
+      import('./pages/historial/historial.component').then(
+        (c) => c.HistorialComponent
+      ),
+      title: 'Historial'
+  },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./pages/profile/profile.component').then(
+        (c) => c.ProfileComponent
+      ),
+      title: 'Historial'
   },
   { path: '**', redirectTo: '' },
 ];

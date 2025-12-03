@@ -1,0 +1,72 @@
+<div class="his-page">
+  @if (alert) {
+    <div class="his-alert">
+      <div
+        class="alert"
+        role="alert"
+        [class.alert-success]="alert.type === 'success'"
+        [class.alert-danger]="alert.type === 'danger'"
+      >
+        {{ alert.text }}
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeAlert()"
+        ></button>
+      </div>
+    </div>
+  }
+
+  <h1 class="his-title">Histórico</h1>
+
+  @if (!user) {
+    <div class="his-empty auth">
+      <h2>No has iniciado sesión</h2>
+      <p>Por favor inicia sesión para ver tu histórico.</p>
+      <a routerLink="/login" class="btn btn-primary">Ir a iniciar sesión</a>
+    </div>
+  }
+
+  @if (user && loading) {
+    <div class="his-loading">Cargando historial…</div>
+  }
+
+  @if (user && !loading && !hasHistory) {
+    <div class="his-empty">
+      <h2>Aún no hay histórico</h2>
+      <p>Cuando completes compras, aquí verás tus órdenes.</p>
+      <a routerLink="/products" class="btn btn-outline">Ver productos</a>
+    </div>
+  }
+
+  @if (user && !loading && hasHistory) {
+    <div class="his-table-wrap">
+      <table class="his-table">
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Artículos</th>
+            <th>Total</th>
+            <th>Pago</th>
+            <th>Estatus</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (o of orders; track o._id) {
+            <tr>
+              <td class="mono">{{ orderIdShort(o._id) }}</td>
+              <td>{{ orderItemsCount(o) }}</td>
+              <td class="price">{{ o.totalPrice | currency }}</td>
+              <td><span class="badge">{{ o.paymentStatus || '—' }}</span></td>
+              <td>
+                <span class="badge badge--status">{{ o.status || '—' }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

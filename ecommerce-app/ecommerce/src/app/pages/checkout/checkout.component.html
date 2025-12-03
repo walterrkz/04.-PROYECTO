@@ -1,1 +1,171 @@
-<p>checkout works!</p>
+<div class="ck-page">
+  @if (alert) {
+    <div class="ck-alert">
+      <div
+        class="alert"
+        role="alert"
+        [class.alert-success]="alert.type === 'success'"
+        [class.alert-danger]="alert.type === 'danger'"
+      >
+        {{ alert.text }}
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeAlert()"
+        ></button>
+      </div>
+    </div>
+  }
+
+  <h1 class="ck-title">Checkout</h1>
+
+  @if (!user) {
+    <div class="ck-empty auth">
+      <h2>No has iniciado sesión</h2>
+      <p>Por favor inicia sesión para continuar.</p>
+      <a routerLink="/login" class="btn btn-primary">Ir a iniciar sesión</a>
+    </div>
+  }
+
+  @if (user && loading) {
+    <div class="ck-loading">Cargando…</div>
+  }
+
+  @if (user && !loading && (!cart || cart.products.length === 0)) {
+    <div class="ck-empty">
+      <h2>Aún no hay carrito</h2>
+      <p>Agrega productos para poder continuar con el checkout.</p>
+      <a routerLink="/products" class="btn btn-outline">Ver productos</a>
+    </div>
+  }
+
+  @if (user && !loading && cart && cart.products.length > 0) {
+    <section class="ck-layout">
+      <form class="ck-card" [formGroup]="checkoutForm" (ngSubmit)="handleSubmit()">
+        <h3 class="ck-card-title">Datos de envío</h3>
+
+        <div class="ck-fields">
+          <app-form-field
+            label="Nombre completo"
+            fieldId="fullName"
+            placeholder="Tu nombre"
+            [required]="true"
+            [errorMessage]="getErrorMessage('fullName')"
+            formControlName="fullName"
+          ></app-form-field>
+
+          <app-form-field
+            label="Teléfono"
+            fieldId="phone"
+            placeholder="55 0000 0000"
+            [required]="true"
+            [errorMessage]="getErrorMessage('phone')"
+            formControlName="phone"
+          ></app-form-field>
+
+          <app-form-field
+            label="Calle y número"
+            fieldId="street"
+            placeholder="Calle, número, colonia"
+            [required]="true"
+            [errorMessage]="getErrorMessage('street')"
+            formControlName="street"
+          ></app-form-field>
+
+          <app-form-field
+            label="Ciudad"
+            fieldId="city"
+            placeholder="Ciudad"
+            [required]="true"
+            [errorMessage]="getErrorMessage('city')"
+            formControlName="city"
+          ></app-form-field>
+
+          <app-form-field
+            label="Estado"
+            fieldId="state"
+            placeholder="Estado"
+            [required]="true"
+            [errorMessage]="getErrorMessage('state')"
+            formControlName="state"
+          ></app-form-field>
+
+          <app-form-field
+            label="Código postal"
+            fieldId="zipCode"
+            placeholder="00000"
+            [required]="true"
+            [errorMessage]="getErrorMessage('zipCode')"
+            formControlName="zipCode"
+          ></app-form-field>
+        </div>
+
+        <h3 class="ck-card-title mt-16">Método de pago</h3>
+
+        <div class="ck-select">
+          <label class="ck-select-label" for="paymentMethod">
+            Selecciona un método
+            <span class="req">*</span>
+          </label>
+
+          <select
+            id="paymentMethod"
+            class="ck-select-control"
+            formControlName="paymentMethod"
+          >
+            <option value="" disabled>Selecciona…</option>
+            @for (m of paymentMethods; track m.value) {
+              <option [value]="m.value">{{ m.label }}</option>
+            }
+          </select>
+
+          @if (paymentMethodError) {
+            <div class="ck-select-error">{{ paymentMethodError }}</div>
+          }
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100 mt-16"
+          [disabled]="checkoutForm.invalid || submitting"
+        >
+          {{ submitting ? 'Procesando…' : 'Crear orden' }}
+        </button>
+      </form>
+
+      <aside class="ck-summary">
+        <h3>Resumen</h3>
+
+        <ul class="ck-summary-list">
+          @for (item of cart.products; track item.product._id) {
+            <li class="ck-summary-item">
+              <div class="sum-left">
+                <span class="sum-name">{{ item.product.name }}</span>
+                <span class="sum-qty">x{{ item.quantity }}</span>
+              </div>
+              <div class="sum-right">
+                {{ lineTotal(item.product.price, item.quantity) | currency }}
+              </div>
+            </li>
+          }
+        </ul>
+
+        <div class="sum-row">
+          <span>Subtotal</span>
+          <span>{{ total | currency }}</span>
+        </div>
+
+        <div class="sum-row">
+          <span>Envío</span>
+          <span>{{ shippingCost | currency }}</span>
+        </div>
+
+        <div class="sum-total">
+          <span>Total</span>
+          <strong>{{ grandTotal | currency }}</strong>
+        </div>
+      </aside>
+    </section>
+  }
+</div>

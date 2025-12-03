@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { CurrencyPipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
@@ -9,6 +9,9 @@ import { Cart } from '../../core/types/Cart';
 
 import { FormFieldComponent } from '../../components/shared/form-field/form-field.component';
 import { FormErrorService } from '../../core/services/validation/form-error.service';
+
+import { OrderService } from '../../core/services/order/order.service';
+import { CreateOrderPayload, PaymentMethod } from '../../core/types/Order';
 
 @Component({
   selector: 'app-checkout',
@@ -42,11 +45,13 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private authService: AuthService,
-    private validation: FormErrorService
+    private validation: FormErrorService,
+    private orderService: OrderService,
+    private router: Router
   ) {
     this.checkoutForm = this.fb.group({
       fullName: ['', Validators.required],
-      phone: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       street: ['', Validators.required],
       city: ['', Validators.required],
       state: ['', Validators.required],
@@ -98,10 +103,17 @@ export class CheckoutComponent implements OnInit {
     return this.validation.getFieldError(this.checkoutForm, fieldName, labels);
   }
 
+  getPhoneError(): string {
+    const c = this.checkoutForm.get('phone');
+    if (!c || !c.touched) return '';
+    if (c.hasError('required')) return 'El teléfono es requerido';
+    if (c.hasError('pattern')) return 'El teléfono debe tener 10 dígitos';
+    return '';
+  }
+
   get paymentMethodError(): string {
     const c = this.checkoutForm.get('paymentMethod');
-    if (!c) return '';
-    if (!c.touched) return '';
+    if (!c || !c.touched) return '';
     if (c.hasError('required')) return 'El método de pago es requerido';
     return '';
   }
@@ -122,18 +134,62 @@ export class CheckoutComponent implements OnInit {
     return this.total + this.shippingCost;
   }
 
+  get hasStockIssue(): boolean {
+    if (!this.cart?.products?.length) return false;
+    return this.cart.products.some(
+      (p) => (p.product.stock ?? 0) <= 0 || p.quantity > (p.product.stock ?? 0)
+    );
+  }
+
   handleSubmit() {
+    if (!this.user) return;
+
+    if (this.hasStockIssue) {
+      this.showAlert('danger', 'Hay productos sin stock suficiente. Ajusta tu carrito antes de pagar.');
+      return;
+    }
+
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
       return;
     }
 
+    if (!this.cart || this.cart.products.length === 0) {
+      this.showAlert('danger', 'Tu carrito está vacío.');
+      return;
+    }
+
+    const payload: CreateOrderPayload = {
+      shippingAddress: {
+        fullName: String(this.checkoutForm.value.fullName).trim(),
+        phone: String(this.checkoutForm.value.phone).trim(),
+        street: String(this.checkoutForm.value.street).trim(),
+        city: String(this.checkoutForm.value.city).trim(),
+        state: String(this.checkoutForm.value.state).trim(),
+        zipCode: String(this.checkoutForm.value.zipCode).trim(),
+      },
+      paymentMethod: this.checkoutForm.value.paymentMethod as PaymentMethod,
+      shippingCost: this.shippingCost,
+    };
+
     this.submitting = true;
 
-    setTimeout(() => {
-      this.submitting = false;
-      this.showAlert('success', 'Formulario listo. Siguiente paso: crear orden.');
-    }, 700);
+    this.orderService.createOrder(payload).subscribe({
+      next: () => {
+        this.submitting = false;
+        this.showAlert('success', 'Orden creada correctamente.');
+        this.router.navigateByUrl('/').then(() => window.location.reload());
+      },
+      error: (err) => {
+        this.submitting = false;
+        const msg =
+          err?.error?.error ||
+          err?.error?.message ||
+          err?.message ||
+          'No se pudo crear la orden.';
+        this.showAlert('danger', `Error: ${msg}`);
+      },
+    });
   }
 
   private showAlert(type: 'success' | 'danger', text: string, ms = 2500) {

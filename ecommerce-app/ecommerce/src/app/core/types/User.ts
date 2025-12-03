@@ -11,3 +11,8 @@ export type User = {
 export type UserDoc = User & {
   hashPassword: string;
 };
+
+export type ProfileResponse = {
+  message: string;
+  user: User;
+};

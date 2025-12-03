@@ -1,27 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  AuthService,
-  decodedToken,
-} from '../../core/services/auth/auth.service';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import type { User } from '../../core/types/User';
+import * as AuthActions from '../../store/auth/auth.actions';
+import { selectUser } from '../../store/auth/auth.selectors';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, AsyncPipe],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
   standalone: true,
 })
 export class HeaderComponent {
-  user: decodedToken | null = null;
+  private store = inject(Store);
 
-  constructor(private authService: AuthService) {}
-
-  ngOnInit(): void {
-    this.user = this.authService.decodedToken;
-  }
+  user$: Observable<User | null> = this.store.select(selectUser);
 
   onLogout() {
-    this.authService.logout();
+    this.store.dispatch(AuthActions.logout());
   }
 }

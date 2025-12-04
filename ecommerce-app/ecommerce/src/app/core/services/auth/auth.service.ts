@@ -13,7 +13,7 @@ export type decodedToken = {
   exp?: number;
 };
 
-type TokenResponse = {
+export type TokenResponse = {
   token: string;
   refreshToken: string;
 };
@@ -48,40 +48,26 @@ export class AuthService {
       return null;
     }
   }
+
   register(data: any) {
     return this.httpClient.post(`${this.baseUrl}/auth/register`, data);
   }
 
-  login(data: any) {
-    this.httpClient
-      .post(`${this.baseUrl}/auth/login`, data)
-      .pipe(
-        map((raw) => {
-          const parsed = tokenSchema.safeParse(raw);
-          if (!parsed.success)
-            throw new Error('Respuesta inválida del servidor');
-          return parsed.data as TokenResponse;
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('refreshToken', res.refreshToken);
-          this.router.navigateByUrl('/').then(() => {
-            window.location.reload();
-          });
-        },
-        error: (err) => {
-          const msg = this.parseLoginError(err);
-          this._loginError$.next(msg);
-        },
-      });
+  login(data: any): Observable<TokenResponse> {
+    return this.httpClient.post(`${this.baseUrl}/auth/login`, data).pipe(
+      map((raw) => {
+        const parsed = tokenSchema.safeParse(raw);
+        if (!parsed.success) throw new Error('Respuesta inválida del servidor');
+        return parsed.data as TokenResponse;
+      })
+    );
   }
 
-  refreshToken(refreshToken: string) {
-    return this.httpClient.post(`${this.baseUrl}/auth/refresh-token`, {
-      token: refreshToken,
-    });
+  refreshToken(refreshToken: string): Observable<{ token: string }> {
+    return this.httpClient.post<{ token: string }>(
+      `${this.baseUrl}/auth/refresh-token`,
+      { token: refreshToken }
+    );
   }
 
   checkEmailExist(email: string): Observable<boolean> {
@@ -90,6 +76,11 @@ export class AuthService {
         params: { email },
       })
       .pipe(map((res) => res.exists));
+  }
+
+  emitLoginError(err: any) {
+    const msg = this.parseLoginError(err);
+    this._loginError$.next(msg);
   }
 
   private parseLoginError(err: any): string {
@@ -125,14 +116,9 @@ export class AuthService {
 
     try {
       const decoded = jwtDecode<decodedToken>(token);
-
-      // si no hay exp, lo consideramos válido (pero en tu caso sí debería haber)
       if (!decoded.exp) return true;
-
-      const isExpired = decoded.exp * 1000 < Date.now();
-      return !isExpired;
-    } catch (e) {
-      // No borres el token aquí: si falla el decode, deja que el backend lo rechace.
+      return decoded.exp * 1000 >= Date.now();
+    } catch {
       return false;
     }
   }

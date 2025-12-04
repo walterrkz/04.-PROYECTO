@@ -1,40 +1,56 @@
-import { Component, OnInit } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { CurrencyPipe, AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 
 import { CartService } from '../../core/services/cart/cart.service';
-import {
-  AuthService,
-  decodedToken,
-} from '../../core/services/auth/auth.service';
-
+import type { User } from '../../core/types/User';
 import { Cart } from '../../core/types/Cart';
+
+import { selectUser } from '../../store/auth/auth.selectors';
+import * as AuthActions from '../../store/auth/auth.actions';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [CurrencyPipe, RouterLink],
+  imports: [CurrencyPipe, RouterLink, AsyncPipe],
   templateUrl: './carrito.component.html',
   styleUrl: './carrito.component.css',
 })
-export class CarritoComponent implements OnInit {
-  user: decodedToken | null = null;
+export class CarritoComponent implements OnInit, OnDestroy {
+  private store = inject(Store);
+  private subs = new Subscription();
+
+  user$: Observable<User | null> = this.store.select(selectUser);
+
   loading = false;
   cart: Cart | null = null;
+
   alert: { type: 'success' | 'danger'; text: string } | null = null;
   private alertTimer?: any;
 
-  constructor(
-    private cartService: CartService,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private cartService: CartService) {}
 
   ngOnInit(): void {
-    this.user = this.authService.decodedToken;
-    if (this.user) {
-      this.loadCart();
-    }
+    this.store.dispatch(AuthActions.loadUser());
+
+    const s = this.user$.subscribe((user) => {
+      if (user) {
+        this.loadCart();
+      } else {
+        this.cart = null;
+        this.loading = false;
+      }
+    });
+
+    this.subs.add(s);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+    if (this.alertTimer) clearTimeout(this.alertTimer);
   }
 
   private loadCart() {
@@ -82,7 +98,6 @@ export class CarritoComponent implements OnInit {
   decreaseQty(item: any) {
     if (!this.cart) return;
     if (item.quantity <= 1) return;
-
     const newQty = item.quantity - 1;
     this.updateItemQuantity(item.product._id, newQty);
   }
@@ -91,7 +106,6 @@ export class CarritoComponent implements OnInit {
     if (!this.cart) return;
     const stock = item.product.stock ?? 0;
     if (item.quantity >= stock) return;
-
     const newQty = item.quantity + 1;
     this.updateItemQuantity(item.product._id, newQty);
   }

@@ -1,20 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AuthService, decodedToken } from '../../core/services/auth/auth.service';
+import { AsyncPipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import type { User } from '../../core/types/User';
+import { selectUser } from '../../store/auth/auth.selectors';
+import * as AuthActions from '../../store/auth/auth.actions';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AsyncPipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
-  user: decodedToken | null = null;
+  private store = inject(Store);
 
-  constructor(private authService: AuthService) {}
+  user$: Observable<User | null> = this.store.select(selectUser);
 
   ngOnInit(): void {
-    this.user = this.authService.decodedToken;
+    this.store.dispatch(AuthActions.loadUser());
   }
 }

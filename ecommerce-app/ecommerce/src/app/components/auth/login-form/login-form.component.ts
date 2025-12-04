@@ -5,11 +5,14 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+
 import { FormFieldComponent } from '../../shared/form-field/form-field.component';
 import { FormErrorService } from '../../../core/services/validation/form-error.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { Subscription } from 'rxjs';
+import * as AuthActions from '../../../store/auth/auth.actions';
 
 @Component({
   selector: 'app-login-form',
@@ -28,7 +31,9 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private validation: FormErrorService,
-    private authService: AuthService
+    private authService: AuthService,
+    private store: Store,
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -62,7 +67,22 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       this.loginForm.markAllAsTouched();
       return;
     }
-    this.authService.login(this.loginForm.value);
+
+    const s = this.authService.login(this.loginForm.value).subscribe({
+      next: (res) => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('refreshToken', res.refreshToken);
+
+        this.store.dispatch(AuthActions.loadUser());
+        this.router.navigateByUrl('/');
+      },
+      error: (err) => {
+        const msg = err?.error?.message ?? 'Error al iniciar sesión';
+        this.showFeedback(msg, 'error');
+      },
+    });
+
+    this.subs.add(s);
   }
 
   private showFeedback(text: string, type: 'success' | 'error') {

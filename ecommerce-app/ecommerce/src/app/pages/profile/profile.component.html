@@ -1,31 +1,28 @@
 <div class="pf-page">
   <h1 class="pf-title">Perfil</h1>
 
-  @if (!user) {
-    <div class="pf-empty auth">
-      <h2>No has iniciado sesión</h2>
-      <p>Por favor inicia sesión para ver tu perfil.</p>
-      <a routerLink="/login" class="btn btn-primary">Ir a iniciar sesión</a>
+  @if (user$ | async; as user) {
+  <div class="pf-card">
+    <div class="pf-row">
+      <span class="pf-label">Nombre</span>
+      <span class="pf-value">{{ user.displayName }}</span>
     </div>
-  }
 
-  @if (user) {
-    <div class="pf-card">
-      <div class="pf-row">
-        <span class="pf-label">Nombre</span>
-        <span class="pf-value">{{ user.displayName }}</span>
-      </div>
-
-      <div class="pf-row">
-        <span class="pf-label">Rol</span>
-        <span class="pf-badge">{{ user.role }}</span>
-      </div>
-
-      <div class="pf-row">
-        <span class="pf-label">User ID</span>
-        <span class="pf-mono">{{ user.userId }}</span>
-      </div>
+    <div class="pf-row">
+      <span class="pf-label">Rol</span>
+      <span class="pf-badge">{{ user.role }}</span>
     </div>
+
+    <div class="pf-row">
+      <span class="pf-label">User ID</span>
+      <span class="pf-mono">{{ user._id }}</span>
+    </div>
+  </div>
+  } @else {
+  <div class="pf-empty auth">
+    <h2>No has iniciado sesión</h2>
+    <p>Por favor inicia sesión para ver tu perfil.</p>
+    <a routerLink="/login" class="btn btn-primary">Ir a iniciar sesión</a>
+  </div>
   }
 </div>
-

@@ -29,14 +29,12 @@ export class AuthEffects {
     )
   );
 
-  logout$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActions.logout),
-      map(() => {
-        this.authService.logout();
-        console.log('🔓 NgRx Effect: Usuario deslogueado');
-        return { type: '[Auth] Logout Complete' };
-      })
-    )
+  logout$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.logout),
+        map(() => this.authService.logout())
+      ),
+    { dispatch: false }
   );
 }

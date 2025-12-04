@@ -10,11 +10,12 @@ export type decodedToken = {
   userId: string;
   displayName: string;
   role: 'admin' | 'user' | 'guest';
+  exp?: number;
 };
 
 type TokenResponse = {
   token: string;
-  refreshToken: string | number;
+  refreshToken: string;
 };
 
 @Injectable({
@@ -65,7 +66,7 @@ export class AuthService {
       .subscribe({
         next: (res) => {
           localStorage.setItem('token', res.token);
-          localStorage.setItem('refreshToken', String(res.refreshToken));
+          localStorage.setItem('refreshToken', res.refreshToken);
           this.router.navigateByUrl('/').then(() => {
             window.location.reload();
           });
@@ -115,28 +116,23 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
-    this.router.navigateByUrl('/').then(() => {
-      window.location.reload();
-    });
+    this.router.navigateByUrl('/', { replaceUrl: true });
   }
 
   isLoggedIn(): boolean {
-    const token = localStorage.getItem('token');
+    const token = this.token;
     if (!token) return false;
 
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const isExpired = payload.exp * 1000 < Date.now();
+      const decoded = jwtDecode<decodedToken>(token);
 
-      if (isExpired) {
-        localStorage.removeItem('token');
-        return false;
-      }
+      // si no hay exp, lo consideramos válido (pero en tu caso sí debería haber)
+      if (!decoded.exp) return true;
 
-      return true;
-    } catch (error) {
-      // Si no se puede parsear el token, lo removemos
-      localStorage.removeItem('token');
+      const isExpired = decoded.exp * 1000 < Date.now();
+      return !isExpired;
+    } catch (e) {
+      // No borres el token aquí: si falla el decode, deja que el backend lo rechace.
       return false;
     }
   }

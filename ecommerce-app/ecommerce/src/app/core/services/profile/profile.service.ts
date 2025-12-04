@@ -10,6 +10,6 @@ export class ProfileService {
   private base = environment.apiUrl;
 
   getProfile(): Observable<ProfileResponse> {
-    return this.http.get<ProfileResponse>(`${this.base}/users/profile`);
+    return this.http.get<ProfileResponse>(`${this.base}/user/profile`);
   }
 }

@@ -17,5 +17,7 @@
     (blur)="onBlur()"
   />
 
-  <app-error-message [message]="errorMessage"></app-error-message>
+  @if (errorMessage) {
+    <app-error-message [message]="errorMessage"></app-error-message>
+  }
 </div>

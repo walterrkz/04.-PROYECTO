@@ -18,13 +18,16 @@ import {
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
+
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { loggerInterceptor } from './core/interceptors/logger.interceptor';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, loggerInterceptor])),
     provideStore({ auth: authReducer }),
     provideEffects([AuthEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),

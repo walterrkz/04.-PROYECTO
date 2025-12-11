@@ -33,6 +33,10 @@ export class HistorialComponent implements OnInit {
     if (this.user) this.loadOrders();
   }
 
+  loadHistory(): void {
+    this.loadOrders();
+  }
+
   private loadOrders() {
     this.loading = true;
 

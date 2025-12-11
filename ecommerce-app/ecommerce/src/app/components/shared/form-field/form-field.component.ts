@@ -1,6 +1,6 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ErrorMessageComponent } from "../error-message/error-message.component";
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 
 @Component({
   selector: 'app-form-field',
@@ -24,31 +24,35 @@ export class FormFieldComponent implements ControlValueAccessor {
   @Input() errorMessage: string = '';
   @Input() fieldId: string = '';
 
-  value: any;
+  value: any = '';
   disabled: boolean = false;
 
   private onChange = (value: any) => {};
   private onTouched = () => {};
 
-  onBlur(){
+  onBlur() {
     this.onTouched();
   }
 
-  onInputChange(event:Event){
+  onInputChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.value = target.value;
     this.onChange(this.value);
+    this.onTouched();
   }
 
   writeValue(val: any): void {
-    this.value = val || '';
+    this.value = val ?? '';
   }
+
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
+
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
+
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }

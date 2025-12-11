@@ -53,7 +53,7 @@ export class CarritoComponent implements OnInit, OnDestroy {
     if (this.alertTimer) clearTimeout(this.alertTimer);
   }
 
-  private loadCart() {
+  loadCart() {
     this.loading = true;
     this.cartService.getCartByUser().subscribe({
       next: (c) => {

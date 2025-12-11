@@ -16,3 +16,6 @@ export type ProfileResponse = {
   message: string;
   user: User;
 };
+
+// export type userCerdentials = {email:string, password:string}
+export type UserCredentials = Pick<User, 'email'> & { password: string };

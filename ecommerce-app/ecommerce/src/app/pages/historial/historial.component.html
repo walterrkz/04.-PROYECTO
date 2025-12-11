@@ -26,47 +26,70 @@
       <p>Por favor inicia sesión para ver tu histórico.</p>
       <a routerLink="/login" class="btn btn-primary">Ir a iniciar sesión</a>
     </div>
-  }
+  } @else {
+    @defer (on viewport; prefetch on hover) {
+      @if (loading) {
+        <div class="his-loading">
+          <div class="his-spinner" aria-label="Cargando"></div>
+          <p>Cargando historial…</p>
+        </div>
+      }
 
-  @if (user && loading) {
-    <div class="his-loading">Cargando historial…</div>
-  }
+      @if (!loading && !hasHistory) {
+        <div class="his-empty">
+          <h2>Aún no hay histórico</h2>
+          <p>Cuando completes compras, aquí verás tus órdenes.</p>
+          <a routerLink="/products" class="btn btn-outline">Ver productos</a>
+        </div>
+      }
 
-  @if (user && !loading && !hasHistory) {
-    <div class="his-empty">
-      <h2>Aún no hay histórico</h2>
-      <p>Cuando completes compras, aquí verás tus órdenes.</p>
-      <a routerLink="/products" class="btn btn-outline">Ver productos</a>
-    </div>
-  }
+      @if (!loading && hasHistory) {
+        <div class="his-table-wrap">
+          <table class="his-table">
+            <thead>
+              <tr>
+                <th>Orden</th>
+                <th>Artículos</th>
+                <th>Total</th>
+                <th>Pago</th>
+                <th>Estatus</th>
+              </tr>
+            </thead>
 
-  @if (user && !loading && hasHistory) {
-    <div class="his-table-wrap">
-      <table class="his-table">
-        <thead>
-          <tr>
-            <th>Orden</th>
-            <th>Artículos</th>
-            <th>Total</th>
-            <th>Pago</th>
-            <th>Estatus</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          @for (o of orders; track o._id) {
-            <tr>
-              <td class="mono">{{ orderIdShort(o._id) }}</td>
-              <td>{{ orderItemsCount(o) }}</td>
-              <td class="price">{{ o.totalPrice | currency }}</td>
-              <td><span class="badge">{{ o.paymentStatus || '—' }}</span></td>
-              <td>
-                <span class="badge badge--status">{{ o.status || '—' }}</span>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+            <tbody>
+              @for (o of orders; track o._id) {
+                <tr>
+                  <td class="mono">{{ orderIdShort(o._id) }}</td>
+                  <td>{{ orderItemsCount(o) }}</td>
+                  <td class="price">{{ o.totalPrice | currency }}</td>
+                  <td><span class="badge">{{ o.paymentStatus || '—' }}</span></td>
+                  <td>
+                    <span class="badge badge--status">{{ o.status || '—' }}</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    } @loading (minimum 3000ms) {
+      <div class="his-loading">
+        <div class="his-spinner" aria-label="Cargando"></div>
+        <p>Cargando historial…</p>
+      </div>
+    } @placeholder {
+      <div class="his-loading">
+        <div class="his-spinner" aria-label="Cargando"></div>
+        <p>El histórico se cargará cuando entre en vista</p>
+      </div>
+    } @error {
+      <div class="his-empty">
+        <h2>Error al cargar el histórico</h2>
+        <p>No pudimos cargar tus órdenes. Intenta nuevamente.</p>
+        <button class="btn btn-primary" type="button" (click)="loadHistory()">
+          Reintentar
+        </button>
+      </div>
+    }
   }
 </div>

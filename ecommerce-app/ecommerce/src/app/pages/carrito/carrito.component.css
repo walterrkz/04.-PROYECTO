@@ -420,3 +420,27 @@
   border-color: #111827;
   filter: brightness(0.95);
 }
+
+.cart-loading {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  padding: 28px 12px;
+  text-align: center;
+  color: #334155;
+}
+
+.cart-spinner {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 5px solid rgba(148, 163, 184, 0.35);
+  border-top-color: rgba(30, 41, 59, 0.9);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

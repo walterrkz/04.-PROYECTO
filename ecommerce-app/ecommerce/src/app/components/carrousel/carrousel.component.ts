@@ -3,11 +3,12 @@ import { Product } from '../../core/types/Products';
 import { CardComponent } from '../card/card.component';
 import { Cart } from '../../core/types/Cart';
 import { CartService } from '../../core/services/cart/cart.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-carrousel',
   standalone: true,
-  imports: [CardComponent],
+  imports: [CardComponent, CommonModule],
   templateUrl: './carrousel.component.html',
   styleUrl: './carrousel.component.css',
 })

@@ -1,97 +1,51 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormFieldComponent } from '../../shared/form-field/form-field.component';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormErrorService } from '../../../core/services/validation/form-error.service';
-import { AuthService } from '../../../core/services/auth/auth.service';
-import * as AuthActions from '../../../store/auth/auth.actions';
+import { RouterLink } from '@angular/router';
+import { canComponentDeactivate } from '../../../core/guards/form/form.guard';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { login } from '../../../store/auth/auth.actions';
 
 @Component({
   selector: 'app-login-form',
+  standalone: true,
   imports: [FormFieldComponent, ReactiveFormsModule, RouterLink],
   templateUrl: './login-form.component.html',
-  styleUrl: './login-form.component.css',
+  styleUrl: './login-form.component.css'
 })
-export class LoginFormComponent implements OnInit, OnDestroy {
-  fb = inject(FormBuilder);
+export class LoginFormComponent implements canComponentDeactivate {
+  @Output() ready = new EventEmitter<LoginFormComponent>();
+
+  private fb = inject(FormBuilder);
   loginForm: FormGroup;
+  isSubmited = false;
 
   feedbackText = '';
   feedbackType: 'success' | 'error' | null = null;
-  private subs = new Subscription();
-  private feedbackTimer: any = null;
 
-  constructor(
-    private validation: FormErrorService,
-    private authService: AuthService,
-    private store: Store,
-    private router: Router
-  ) {
+  constructor(private validation: FormErrorService, private readonly store: Store) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', Validators.required]
     });
+
+    this.ready.emit(this);
   }
 
-  ngOnInit(): void {
-    const s = this.authService.loginError$.subscribe((msg) => {
-      this.showFeedback(msg, 'error');
-    });
-    this.subs.add(s);
-  }
-
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
-    if (this.feedbackTimer) clearTimeout(this.feedbackTimer);
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    if (this.loginForm.pristine || this.isSubmited) return true;
+    return confirm('Tienes cambios sin guardar.\n¿Estás seguro de que quieres salir?');
   }
 
   getErrorMessage(fieldName: string) {
     const loginLabels = { email: 'email', password: 'contraseña' };
-    return this.validation.getFieldError(
-      this.loginForm,
-      fieldName,
-      loginLabels
-    );
+    return this.validation.getFieldError(this.loginForm, fieldName, loginLabels);
   }
 
   handleSubmit() {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
-
-    const s = this.authService.login(this.loginForm.value).subscribe({
-      next: (res) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('refreshToken', res.refreshToken);
-
-        this.store.dispatch(AuthActions.loadUser());
-        this.router.navigateByUrl('/');
-      },
-      error: (err) => {
-        const msg = err?.error?.message ?? 'Error al iniciar sesión';
-        this.showFeedback(msg, 'error');
-      },
-    });
-
-    this.subs.add(s);
-  }
-
-  private showFeedback(text: string, type: 'success' | 'error') {
-    this.feedbackText = text;
-    this.feedbackType = type;
-    if (this.feedbackTimer) clearTimeout(this.feedbackTimer);
-    this.feedbackTimer = setTimeout(() => {
-      this.feedbackText = '';
-      this.feedbackType = null;
-    }, 3500);
+    this.store.dispatch(login({ credentials: this.loginForm.value }));
+    this.isSubmited = true;
   }
 }

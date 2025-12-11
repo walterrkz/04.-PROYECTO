@@ -1,20 +1,20 @@
 <div id="carouselExample" class="carousel slide">
   <div class="carousel-inner">
-    @for (item of fnGetItemsNumber(products); track item; let i = $index) {
+    <ng-container *ngFor="let item of fnGetItemsNumber(products); let i = index">
       <div class="carousel-item {{ i === 0 ? 'active' : '' }}">
         <div
           class="product-grid"
           [style.grid-template-columns]="'repeat(' + carrouselItems + ', 1fr)'"
         >
-          @for (j of fnGetItems(i, products); track j) {
+          <ng-container *ngFor="let j of fnGetItems(i, products)">
             <app-card
               [product]="j"
               [outOfStock]="isOutOfStock(j)"
             ></app-card>
-          }
+          </ng-container>
         </div>
       </div>
-    }
+    </ng-container>
   </div>
 
   <button

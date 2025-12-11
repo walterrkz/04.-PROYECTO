@@ -15,17 +15,20 @@ export const routes: Routes = [
   },
   {
     path: 'carrito',
-    canActivate: [authGuard],
+
     loadComponent: () =>
       import('../app/pages/carrito/carrito.component').then(
         (c) => c.CarritoComponent
       ),
     title: 'Carrito',
+    canActivate: [authGuard],
   },
   {
     path: 'login',
     loadComponent: () =>
-      import('../app/pages/auth/login/login.component').then((c) => c.LoginComponent),
+      import('../app/pages/auth/login/login.component').then(
+        (c) => c.LoginComponent
+      ),
     title: 'login',
     canDeactivate: [formGuard],
   },
@@ -55,21 +58,21 @@ export const routes: Routes = [
   },
   {
     path: 'historial',
-    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/historial/historial.component').then(
         (c) => c.HistorialComponent
       ),
     title: 'Historial',
+    canActivate: [authGuard],
   },
   {
     path: 'profile',
-    canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/profile/profile.component').then(
         (c) => c.ProfileComponent
       ),
     title: 'Perfil',
+    canActivate: [authGuard],
   },
   { path: '**', redirectTo: '' },
 ];

@@ -1,4 +1,4 @@
-import type { User } from "../../core/types/User";
+import type { User } from '../../core/types/User';
 
 export interface AuthState {
   user: User | null;

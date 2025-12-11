@@ -44,8 +44,9 @@ export class LoginFormComponent implements canComponentDeactivate {
     return this.validation.getFieldError(this.loginForm, fieldName, loginLabels);
   }
 
-  handleSubmit() {
-    this.store.dispatch(login({ credentials: this.loginForm.value }));
-    this.isSubmited = true;
-  }
+handleSubmit() {
+  if (this.loginForm.invalid) return;
+  this.store.dispatch(login({ credentials: this.loginForm.value }));
+  this.isSubmited = true;
+}
 }

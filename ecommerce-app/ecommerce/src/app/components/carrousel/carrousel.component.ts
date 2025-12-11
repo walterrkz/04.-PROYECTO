@@ -22,6 +22,8 @@ export class CarrouselComponent implements OnInit {
   constructor(private cartService: CartService) {}
 
   ngOnInit(): void {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     this.loadCart();
   }
 

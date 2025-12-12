@@ -1,21 +1,21 @@
 <div class="card h-100 d-flex flex-column">
   @if (alert) {
-    <div class="card-alert">
-      <div
-        class="alert"
-        role="alert"
-        [class.alert-success]="alert.type === 'success'"
-        [class.alert-danger]="alert.type === 'danger'"
-      >
-        {{ alert.text }}
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          (click)="closeAlert()"
-        ></button>
-      </div>
+  <div class="card-alert">
+    <div
+      class="alert"
+      role="alert"
+      [class.alert-success]="alert.type === 'success'"
+      [class.alert-danger]="alert.type === 'danger'"
+    >
+      {{ alert.text }}
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="closeAlert()"
+      ></button>
     </div>
+  </div>
   }
 
   <img [src]="product.imagesUrl?.[0]" class="card-img-top" alt="..." />
@@ -38,25 +38,20 @@
       Ver más
     </a>
 
-    @if (user) {
-      @if (outOfStock) {
-        <button
-          type="button"
-          class="btn btn-secondary w-100 mt-2"
-          disabled
-        >
-          No hay stock
-        </button>
-      } @else {
-        <button
-          type="button"
-          class="btn btn-dark w-100 mt-2"
-          (click)="onAddToCart()"
-          [disabled]="adding"
-        >
-          {{ adding ? 'Añadiendo…' : 'Añadir al carrito' }}
-        </button>
-      }
-    }
+    @if (user) { @if (outOfStock) {
+    <button type="button" class="btn btn-secondary w-100 mt-2" disabled>
+      No hay stock
+    </button>
+    } @else {
+    <button
+      data-cy="add-to-cart-btn"
+      type="button"
+      class="btn btn-dark w-100 mt-2"
+      (click)="onAddToCart()"
+      [disabled]="adding"
+    >
+      {{ adding ? "Añadiendo…" : "Añadir al carrito" }}
+    </button>
+    } }
   </div>
 </div>

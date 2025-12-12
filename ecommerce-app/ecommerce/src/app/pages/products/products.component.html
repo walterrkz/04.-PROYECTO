@@ -7,7 +7,7 @@
 >
   @defer (on viewport; prefetch on hover) {
     @for (product of productResponse.products; track product._id) {
-      <app-card
+      <app-card data-cy="product-card"
         [product]="product"
         [outOfStock]="isOutOfStock(product)"
       ></app-card>
